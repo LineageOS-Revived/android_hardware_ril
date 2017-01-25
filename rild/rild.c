@@ -71,6 +71,8 @@ extern void RIL_onUnsolicitedResponse(int unsolResponse, const void *data,
         size_t datalen);
 #endif
 
+extern int RIL_getCpCrashed();
+
 extern void RIL_requestTimedCallback (RIL_TimedCallback callback,
         void *param, const struct timeval *relativeTime);
 
@@ -230,7 +232,10 @@ int main(int argc, char **argv) {
 
 done:
     RLOGD("RIL_Init starting sleep loop");
-    while (true) {
-        sleep(UINT32_MAX);
+    while (!RIL_getCpCrashed()) {
+        sleep(1);
     }
+
+    RLOGD("CP crashed -> restart");
+    return 1;
 }
